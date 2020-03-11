@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% block content %}
+<main class="container content">
+    <form id="signupForm" method="POST">
+        <div class="form-group firstname">
+            <label class="label" for="firstname">Имя</label>
+            <div class="control">
+                <input class="input" type="text" name="firstname" id="firstname" required>
+            </div>
+        </div>
+        <div class="form-group lastname">
+            <label class="label" for="lastname">Фамилия</label>
+            <div class="control">
+                <input class="input" type="text" name="lastname" id="lastname" required>
+            </div>
+        </div>
+        <div class="form-group email">
+            <label class="label" for="email">Email</label>
+            <div class="control">
+                <input class="input" type="email" name="email" id="email" required>
+            </div>
+        </div>
+        <div class="form-group password">
+            <label class="label" for="password">Пароль</label>
+            <div class="control">
+                <input class="input" type="password" name="password" id="password" required>
+            </div>
+        </div>
+        <div class="form-group is-grouped">
+            <div class="control">
+                <button class="btn button__submit btn-primary" type="submit">Зарегистрироваться</button>
+            </div>
+        </div>
+    </form>
+</main>
+
+<script>
+    let buttonSubmit = document.querySelector('.button__submit')
+    let terms = document.querySelector('.terms')
+    let termsModal = document.querySelector('.modal')
+    let closeModal = document.querySelector('.button__close-modal')
+    let signupForm = document.querySelector('#signupForm')
+    let helps = document.querySelectorAll('.help')
+
+    signupForm.addEventListener("submit", async (e) => {
+        e.preventDefault()
+
+        helps.forEach(el => el.remove())
+
+        try {
+            let response = await fetch('/api/signup', { method: 'POST', body: new FormData(signupForm) })
+            let data = await response.json()
+
+            if (response.status === 422) {
+                document.querySelector('.email')
+                    .insertAdjacentHTML('beforeend', `<p class="help is-danger">${data.msg}</p>`)
+                return
+            } else if (response.status !== 200) {
+                console.log(`Looks like there was a problem. Status code: ${response.status}`)
+                return
+            }
+        } catch (err) {
+            console.error(err)
+        }
+
+        try {
+            let response = await fetch('/api/login', { method: 'POST', body: new FormData(signupForm) })
+            let data = await response.json()
+
+            if (response.status === 422) {
+                document.querySelector('.email')
+                    .insertAdjacentHTML('beforeend', `<p class="help is-danger">${data.msg}</p>`)
+                return
+            } else if (response.status !== 200) {
+                console.log(`Looks like there was a problem. Status code: ${response.status}`)
+                return
+            } else {
+                location.href = '/products'
+            }
+        } catch (err) {
+            console.error(err)
+        }
+    })
+</script>
+{% endblock %}

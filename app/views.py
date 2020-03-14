@@ -9,9 +9,13 @@ def get_profit():
 
     db.cursor.execute(select_e_query)
     expense = db.cursor.fetchone()[0]
+    if expense == None:
+        expense = 0
 
     db.cursor.execute(select_i_query)
     income = db.cursor.fetchone()[0]
+    if income == None:
+        income = 0
 
     return income - expense
 
@@ -29,7 +33,7 @@ def home():
     return render_template('index.html', profit = profit)
 
 
-@app.route('/signup')
+@app.route('/signup', methods=['GET'])
 def signup():
     if session.get('is_logged_in'):
         return redirect('/products')
@@ -37,7 +41,7 @@ def signup():
     return render_template('signup.html', title = 'Регистрация')
 
 
-@app.route('/login')
+@app.route('/login', methods=['GET'])
 def login():
     if session.get('is_logged_in'):
         return redirect('/products')
@@ -45,19 +49,19 @@ def login():
     return render_template('login.html', title = 'Вход')
 
 
-@app.route('/incomes')
+@app.route('/incomes', methods=['GET'])
 def incomes():
     if not session.get('is_logged_in'):
         return redirect('/login')
 
     profit = get_profit()
 
-    select_prod_query = f'SELECT name FROM product'
+    select_prod_query = f'SELECT name FROM products WHERE user_id = "{session.get("is_logged_in")}"'
 
     db.cursor.execute(select_prod_query)
     product = db.cursor.fetchall()
 
-    select_income_query = f'SELECT * FROM incomes'
+    select_income_query = f'SELECT * FROM incomes WHERE user_id = "{session.get("is_logged_in")}"'
 
     db.cursor.execute(select_income_query)
     incomes = db.cursor.fetchall()
@@ -65,7 +69,7 @@ def incomes():
     return render_template('incomes.html', title = 'Приходы', incomes = incomes, products = product, profit = profit)
 
 
-@app.route('/expenses')
+@app.route('/expenses', methods=['GET'])
 def expenses():
     if not session.get('is_logged_in'):
         return redirect('/login')
@@ -73,12 +77,12 @@ def expenses():
     profit = get_profit()
     
 
-    select_prod_query = f'SELECT name FROM product'
+    select_prod_query = f'SELECT name FROM products WHERE user_id = "{session.get("is_logged_in")}"'
 
     db.cursor.execute(select_prod_query)
     product = db.cursor.fetchall()
 
-    select_expense_query = f'SELECT * FROM expenses'
+    select_expense_query = f'SELECT * FROM expenses WHERE user_id = "{session.get("is_logged_in")}"'
 
     db.cursor.execute(select_expense_query)
     expenses = db.cursor.fetchall()
@@ -86,14 +90,14 @@ def expenses():
     return render_template('expenses.html', title = 'Расходы', expenses = expenses, products = product, profit = profit)
 
 
-@app.route('/products')
+@app.route('/products', methods=['GET'])
 def products():
     if not session.get('is_logged_in'):
         return redirect('/login')
 
     profit = get_profit()
     
-    select_prod_query = f'SELECT * FROM product'
+    select_prod_query = f'SELECT * FROM products WHERE user_id = "{session.get("is_logged_in")}"'
 
     db.cursor.execute(select_prod_query)
     product = db.cursor.fetchall()

@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block content %}
+<section>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Название</th>
+                <th scope="col">Кол-во</th>
+                <th scope="col">Цена/ед.</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <th scope="row">{{product[0]}}</th>
+                <td>{{product[1]}}</td>
+                <td>{{product[2]}}</td>
+                <td>{{product[3]}} руб.</td>
+                <td><button class="btn btn-danger js-btn-remove" data-toggle="modal" data-target="#removeModal" data-id="{{product[0]}}">Удалить</button></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <button class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">Добавить продукт</button>
+
+    <div class="modal fade" id="removeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Удаление</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form method="POST">
+                <p>Вы уверены?</p>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+              <button type="button" class="btn btn-danger js-btn-remove-confirm">Удалить</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">Продукт</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body modal-body__prod">
+                    <form action='api/products' method="POST">
+                        <div class="form-group">
+                            <label for="prodname">Название</label>
+                            <input type="text" class="form-control" id="prodname"
+                                aria-describedby="emailHelp" name="prodname">
+                        </div>
+                        <div class="form-group">
+                            <label for="price">Цена/ед.</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">&#8381;</div>
+                                </div>
+                                <input type="number" class="form-control" id="price" name="price">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                    <button type="button" class="btn btn-primary js-btn-product">Добавить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    let btnProduct = document.querySelector('.js-btn-product')
+    let btnsRemove = document.querySelectorAll('.js-btn-remove')
+    let btnRemoveC = document.querySelector('.js-btn-remove-confirm')
+    let formProd = document.querySelector('.modal-body__prod > form')
+    let formRemove = document.querySelector('.modal-body > form')
+
+    btnProduct.addEventListener('click', () => {
+        formProd.submit()
+    })
+
+    btnsRemove.forEach(btn => btn.addEventListener('click', function() {
+        btnRemoveC.setAttribute('data-id', this.getAttribute('data-id'))
+    }))
+
+    btnRemoveC.addEventListener('click', function() {
+        formRemove.action = 'api/products/remove/'+this.getAttribute('data-id')
+        formRemove.submit()
+    })
+</script>
+{% endblock %}

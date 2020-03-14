@@ -2,7 +2,7 @@ from . import app
 from . import views
 from . import database
 import os
-from .api import __init__
+from .functions import __init__
 
 app.config['SECRET_KEY'] = os.urandom(8)
 

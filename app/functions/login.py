@@ -14,7 +14,7 @@ def api_login():
     user = db.cursor.fetchone()
 
     if not user:
-        return make_response(jsonify({'msg': 'User does not exist'}), 422)
+        return make_response(jsonify({'msg': 'Пользователя не существует или пароль неверный'}), 422)
 
     select_query = f'SELECT * FROM users WHERE email = "{email}" AND password = "{password}"'
 
@@ -22,7 +22,7 @@ def api_login():
     user_password = db.cursor.fetchone()
 
     if not user_password:
-        return make_response(jsonify({'msg': 'Password is incorrect'}), 409)
+        return make_response(jsonify({'msg': 'Пользователя не существует или пароль неверный'}), 409)
 
     session['is_logged_in'] = user[0]
 

@@ -17,7 +17,7 @@ def api_signup():
         user = db.cursor.fetchone()
 
         if user:
-            return make_response(jsonify({'msg': 'User already exists'}), 422)
+            return make_response(jsonify({'msg': 'Пользователь существует'}), 422)
 
     except:
         return make_response(jsonify({'msg': 'Unable to create user'}), 500)

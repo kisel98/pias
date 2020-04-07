@@ -19,6 +19,12 @@ def get_profit():
 
     return income - expense
 
+def get_username():
+    select_query = f'SELECT firstname, lastname FROM users WHERE id = "{session.get("is_logged_in")}"'
+    db.cursor.execute(select_query)
+    name = db.cursor.fetchone()
+
+    return f'{name[0]} {name[1]}'
 
 @app.route('/')
 def home():
@@ -55,6 +61,7 @@ def incomes():
         return redirect('/login')
 
     profit = get_profit()
+    name = get_username()
 
     select_prod_query = f'SELECT name FROM products WHERE user_id = "{session.get("is_logged_in")}"'
 
@@ -66,7 +73,7 @@ def incomes():
     db.cursor.execute(select_income_query)
     incomes = db.cursor.fetchall()
 
-    return render_template('incomes.html', title = 'Приходы', incomes = incomes, products = product, profit = profit)
+    return render_template('incomes.html', title = 'Приходы', incomes = incomes, products = product, profit = profit, name = name)
 
 
 @app.route('/expenses', methods=['GET'])
@@ -75,7 +82,7 @@ def expenses():
         return redirect('/login')
 
     profit = get_profit()
-    
+    name = get_username()
 
     select_prod_query = f'SELECT name FROM products WHERE user_id = "{session.get("is_logged_in")}"'
 
@@ -87,7 +94,7 @@ def expenses():
     db.cursor.execute(select_expense_query)
     expenses = db.cursor.fetchall()
 
-    return render_template('expenses.html', title = 'Расходы', expenses = expenses, products = product, profit = profit)
+    return render_template('expenses.html', title = 'Расходы', expenses = expenses, products = product, profit = profit, name = name)
 
 
 @app.route('/products', methods=['GET'])
@@ -96,10 +103,11 @@ def products():
         return redirect('/login')
 
     profit = get_profit()
+    name = get_username()
     
     select_prod_query = f'SELECT * FROM products WHERE user_id = "{session.get("is_logged_in")}"'
 
     db.cursor.execute(select_prod_query)
     product = db.cursor.fetchall()
 
-    return render_template('products.html', title = 'Продукты', products = product, profit = profit)
+    return render_template('products.html', title = 'Продукты', products = product, profit = profit, name = name)

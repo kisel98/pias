@@ -35,17 +35,28 @@
                 let data = await response.json()
 
                 if (response.status === 422) {
-                    document.querySelector('.password')
-                        .insertAdjacentHTML('beforeend', `<p class="text-danger">${data.msg}</p>`)
+                    if (document.querySelector('.text-danger')) {
+                        document.querySelector('.text-danger').innerHTML = `<p class="text-danger">${data.msg}</p>`
+                    } else {
+                        document.querySelector('.password')
+                            .insertAdjacentHTML('beforeend', `<p class="text-danger">${data.msg}</p>`)
+                    }
                     return
                 } else if (response.status === 409) {
-                    document.querySelector('.password')
-                        .insertAdjacentHTML('beforeend', `<p class="text-danger">${data.msg}</p>`)
+                    if (document.querySelector('.text-danger')) {
+                        document.querySelector('.text-danger').innerHTML = `<p class="text-danger">${data.msg}</p>`
+                    } else {
+                        document.querySelector('.password')
+                            .insertAdjacentHTML('beforeend', `<p class="text-danger">${data.msg}</p>`)
+                    }
                     return
                 } else if (response.status !== 200) {
                     console.log(`Looks like there was a problem. Status code: ${response.status}`)
                     return
                 } else {
+                    if (document.querySelector('.text-danger')) {
+                        document.querySelector('.text-danger').innerHTML = ''
+                    }
                     location.href = '/'
                 }
             } catch (err) {

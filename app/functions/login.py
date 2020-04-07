@@ -27,3 +27,9 @@ def api_login():
     session['is_logged_in'] = user[0]
 
     return make_response(jsonify({'msg': 'Logged in'}), 200)
+
+@app.route('/api/logout', methods = ['POST'])
+def api_logout():
+    session.clear()
+
+    return make_response(jsonify(msg = 'Успешно'), 200)

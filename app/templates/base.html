@@ -36,19 +36,31 @@
             {% endif %}
 
             </ul>
-            {% if not session.get('is_logged_in') %}
-            <form class="form-inline my-2 my-lg-0">
-                <a href="/login"><button class="btn btn-outline-success my-2 my-sm-0" type="button">Войти</button></a>
-            </form>
-            {% endif %}
             {% if session.get('is_logged_in') %}
-            <span>Прибыль: {{ profit }} руб.</span>
+            <ul class="nav nav-pills">
+                <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{ name }}</a>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" href="#">Прибыль: {{ profit }} руб.</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item exit" href="#">Выйти</a>
+                  </div>
+                  </li>
+
+            </ul>
             {% endif %}
         </div>
     </nav>
     {% block content %}{% endblock %}
     <script src="{{ url_for('static', filename='js/jquery-3.4.1.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <script>
+        document.querySelector('.exit').addEventListener('click', async function() {
+            let response = await fetch('/api/logout', { method: 'POST' })
+            let data = await response.json()
+            location.href = 'login'
+        })
+    </script>
 </body>
 
 </html>
